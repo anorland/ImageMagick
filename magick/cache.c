@@ -610,7 +610,7 @@ static MagickBooleanType ClonePixelCacheOnDisk(
   /*
     Clone pixel cache on disk with identical morphology.
   */
-  if ((OpenPixelCacheOnDisk(cache_info,ReadMode) == MagickFalse) ||
+  if ((OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse) ||
       (OpenPixelCacheOnDisk(clone_info,IOMode) == MagickFalse))
     return(MagickFalse);
   quantum=(size_t) MagickMaxBufferExtent;
@@ -937,11 +937,9 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
     {
       (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
       cache_info->pixels=(PixelPacket *) NULL;
-      if (cache_info->mode != ReadMode)
-        (void) RelinquishUniqueFileResource(cache_info->cache_filename);
-      *cache_info->cache_filename='\0';
       RelinquishMagickResource(MapResource,cache_info->length);
     }
+    /* FALL THRU */
     case DiskCache:
     {
       if (cache_info->file != -1)
